@@ -1,20 +1,11 @@
-FROM ubuntu:latest AS build
+# Define a imagem base
+FROM openjdk:17-jdk-slim AS build
 
-RUN apt-get update
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /app
 
-RUN apt-get install openjdk-17-jdk -y
+# Copia o arquivo JAR para o diretório de trabalho
+COPY target/to-do-list-0.0.1-SNAPSHOT.jar /app/to-do-list.jar
 
-COPY . .
-
-RUN apt-get install maven -y
-
-RUN mvn clean install
-
-FROM openjdk:17-jdk-slim
-
-EXPOSE 8080
-
-COPY --from=build /target/ToDoList-1.0.0.jar app.jar
-
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+# Define o comando padrão para executar o aplicativo Spring Boot
+CMD ["java", "-jar", "to-do-list.jar"]
